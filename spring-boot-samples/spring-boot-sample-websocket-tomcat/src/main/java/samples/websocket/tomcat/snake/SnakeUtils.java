@@ -16,7 +16,6 @@
 
 package samples.websocket.tomcat.snake;
 
-import java.awt.*;
 import java.util.Random;
 
 public final class SnakeUtils {

@@ -42,7 +42,6 @@ import javax.ws.rs.client.WebTarget;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 

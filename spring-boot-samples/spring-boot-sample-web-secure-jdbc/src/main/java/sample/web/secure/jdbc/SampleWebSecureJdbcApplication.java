@@ -16,11 +16,6 @@
 
 package sample.web.secure.jdbc;
 
-import java.util.Date;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +28,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.sql.DataSource;
+import java.util.Date;
+import java.util.Map;
 
 @SpringBootApplication
 @Controller

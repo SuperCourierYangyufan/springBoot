@@ -16,14 +16,6 @@
 
 package samples.websocket.undertow;
 
-import samples.websocket.undertow.client.GreetingService;
-import samples.websocket.undertow.client.SimpleGreetingService;
-import samples.websocket.undertow.echo.DefaultEchoService;
-import samples.websocket.undertow.echo.EchoService;
-import samples.websocket.undertow.echo.EchoWebSocketHandler;
-import samples.websocket.undertow.reverse.ReverseWebSocketEndpoint;
-import samples.websocket.undertow.snake.SnakeWebSocketHandler;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -36,6 +28,13 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.handler.PerConnectionWebSocketHandler;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
+import samples.websocket.undertow.client.GreetingService;
+import samples.websocket.undertow.client.SimpleGreetingService;
+import samples.websocket.undertow.echo.DefaultEchoService;
+import samples.websocket.undertow.echo.EchoService;
+import samples.websocket.undertow.echo.EchoWebSocketHandler;
+import samples.websocket.undertow.reverse.ReverseWebSocketEndpoint;
+import samples.websocket.undertow.snake.SnakeWebSocketHandler;
 
 @Configuration
 @EnableAutoConfiguration

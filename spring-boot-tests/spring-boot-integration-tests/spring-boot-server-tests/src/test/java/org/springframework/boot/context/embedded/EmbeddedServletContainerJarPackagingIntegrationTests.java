@@ -16,15 +16,14 @@
 
 package org.springframework.boot.context.embedded;
 
-import java.util.Arrays;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

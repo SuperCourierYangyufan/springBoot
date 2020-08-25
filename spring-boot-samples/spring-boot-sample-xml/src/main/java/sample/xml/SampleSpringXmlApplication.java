@@ -16,13 +16,12 @@
 
 package sample.xml;
 
-import java.util.Collections;
-
-import sample.xml.service.HelloWorldService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import sample.xml.service.HelloWorldService;
+
+import java.util.Collections;
 
 public class SampleSpringXmlApplication implements CommandLineRunner {
 

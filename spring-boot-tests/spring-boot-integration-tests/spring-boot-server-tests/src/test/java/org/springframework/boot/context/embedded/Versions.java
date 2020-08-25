@@ -16,15 +16,13 @@
 
 package org.springframework.boot.context.embedded;
 
-import java.io.File;
-import java.io.FileReader;
+import org.springframework.util.StringUtils;
+import org.xml.sax.InputSource;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
-
-import org.xml.sax.InputSource;
-
-import org.springframework.util.StringUtils;
+import java.io.File;
+import java.io.FileReader;
 
 /**
  * Provides access to dependency versions by querying the project's pom.

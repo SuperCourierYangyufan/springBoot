@@ -16,14 +16,14 @@
 
 package org.springframework.boot.load.it.war.embedded;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
 import org.eclipse.jetty.webapp.AbstractConfiguration;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.util.Assert;
 import org.springframework.web.WebApplicationInitializer;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 /**
  * Jetty {@link Configuration} that allows Spring {@link WebApplicationInitializer} to be

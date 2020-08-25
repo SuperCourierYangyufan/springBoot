@@ -16,21 +16,6 @@
 
 package org.springframework.boot.launchscript;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.DockerCmd;
 import com.github.dockerjava.api.exception.DockerClientException;
@@ -50,13 +35,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
 import org.springframework.boot.ansi.AnsiColor;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assume.assumeThat;
 
 /**

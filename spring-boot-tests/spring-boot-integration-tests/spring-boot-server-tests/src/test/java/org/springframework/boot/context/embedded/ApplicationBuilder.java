@@ -16,27 +16,18 @@
 
 package org.springframework.boot.context.embedded;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import com.samskivert.mustache.Mustache;
+import org.apache.maven.shared.invoker.*;
+import org.junit.rules.TemporaryFolder;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
+
+import java.io.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
-
-import com.samskivert.mustache.Mustache;
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.InvocationResult;
-import org.apache.maven.shared.invoker.MavenInvocationException;
-import org.junit.rules.TemporaryFolder;
-
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StringUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

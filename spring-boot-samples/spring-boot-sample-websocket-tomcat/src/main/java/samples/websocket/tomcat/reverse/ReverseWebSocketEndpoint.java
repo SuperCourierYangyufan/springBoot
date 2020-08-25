@@ -16,11 +16,10 @@
 
 package samples.websocket.tomcat.reverse;
 
-import java.io.IOException;
-
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 
 @ServerEndpoint("/reverse")
 public class ReverseWebSocketEndpoint {

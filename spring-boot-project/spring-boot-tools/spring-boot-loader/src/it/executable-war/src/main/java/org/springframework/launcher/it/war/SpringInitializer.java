@@ -16,12 +16,12 @@
 
 package org.springframework.boot.load.it.war;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 /**
  * Spring {@link WebApplicationInitializer} for classic WAR deployment.

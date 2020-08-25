@@ -16,12 +16,12 @@
 
 package org.springframework.boot.devtools.tests;
 
+import org.springframework.util.FileSystemUtils;
+import org.springframework.util.StringUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.util.FileSystemUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * {@link ApplicationLauncher} that launches a remote application with its classes

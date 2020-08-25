@@ -16,10 +16,9 @@
 
 package org.test;
 
-import java.lang.management.ManagementFactory;
-
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
 
 /**
  * This sample app simulates the JMX Mbean that is exposed by the Spring Boot application.

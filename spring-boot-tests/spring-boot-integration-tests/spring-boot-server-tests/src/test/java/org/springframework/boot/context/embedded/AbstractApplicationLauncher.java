@@ -16,19 +16,14 @@
 
 package org.springframework.boot.context.embedded;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.rules.ExternalResource;
-
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base {@link ExternalResource} for launching a Spring Boot application as part of a

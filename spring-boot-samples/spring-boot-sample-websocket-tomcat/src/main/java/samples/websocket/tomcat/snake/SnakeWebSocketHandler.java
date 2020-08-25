@@ -16,15 +16,15 @@
 
 package samples.websocket.tomcat.snake;
 
-import java.awt.Color;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import java.awt.*;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SnakeWebSocketHandler extends TextWebSocketHandler {
 

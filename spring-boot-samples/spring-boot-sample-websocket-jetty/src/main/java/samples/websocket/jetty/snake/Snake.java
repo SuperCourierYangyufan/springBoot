@@ -16,12 +16,12 @@
 
 package samples.websocket.jetty.snake;
 
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
-
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 
 public class Snake {
 

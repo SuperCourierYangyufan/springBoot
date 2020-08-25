@@ -16,6 +16,10 @@
 
 package org.springframework.boot.devtools.tests;
 
+import org.springframework.util.FileSystemUtils;
+import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,10 +30,6 @@ import java.util.jar.Attributes;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
-
-import org.springframework.util.FileSystemUtils;
-import org.springframework.util.StreamUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * {@link ApplicationLauncher} that launches a remote application with its classes in a

@@ -16,20 +16,10 @@
 
 package samples.websocket.tomcat.echo;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import samples.websocket.tomcat.SampleTomcatWebSocketApplication;
-import samples.websocket.tomcat.client.GreetingService;
-import samples.websocket.tomcat.client.SimpleClientWebSocketHandler;
-import samples.websocket.tomcat.client.SimpleGreetingService;
-import samples.websocket.tomcat.echo.CustomContainerWebSocketsApplicationTests.CustomContainerConfiguration;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
@@ -45,6 +35,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import samples.websocket.tomcat.SampleTomcatWebSocketApplication;
+import samples.websocket.tomcat.client.GreetingService;
+import samples.websocket.tomcat.client.SimpleClientWebSocketHandler;
+import samples.websocket.tomcat.client.SimpleGreetingService;
+import samples.websocket.tomcat.echo.CustomContainerWebSocketsApplicationTests.CustomContainerConfiguration;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

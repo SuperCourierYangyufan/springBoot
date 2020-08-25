@@ -16,9 +16,9 @@
 
 package sample;
 
-import javax.validation.Valid;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import javax.validation.Valid;
 
 /**
  * Test that a valid type is generated if an annotation is present.

@@ -16,18 +16,17 @@
 
 package org.springframework.boot.devtools.tests;
 
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
+import org.springframework.util.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
-
-import org.springframework.util.StringUtils;
 
 /**
  * JUnit {@link TestRule} that launched a JVM and redirects its output to a test

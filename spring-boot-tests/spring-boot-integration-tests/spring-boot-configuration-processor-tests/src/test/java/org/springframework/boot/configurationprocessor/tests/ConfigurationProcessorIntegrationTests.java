@@ -16,16 +16,15 @@
 
 package org.springframework.boot.configurationprocessor.tests;
 
-import java.io.IOException;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

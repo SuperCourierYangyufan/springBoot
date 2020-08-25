@@ -16,9 +16,8 @@
 
 package sample.web.ui;
 
-import java.util.Calendar;
-
 import javax.validation.constraints.NotEmpty;
+import java.util.Calendar;
 
 public class Message {
 

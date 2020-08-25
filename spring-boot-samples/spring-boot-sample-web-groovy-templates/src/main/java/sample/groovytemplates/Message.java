@@ -16,9 +16,8 @@
 
 package sample.groovytemplates;
 
-import java.util.Date;
-
 import javax.validation.constraints.NotEmpty;
+import java.util.Date;
 
 public class Message {
 

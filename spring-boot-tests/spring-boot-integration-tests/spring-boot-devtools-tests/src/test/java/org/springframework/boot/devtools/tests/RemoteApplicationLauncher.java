@@ -16,16 +16,16 @@
 
 package org.springframework.boot.devtools.tests;
 
-import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.boot.devtools.RemoteSpringApplication;
 import org.springframework.boot.devtools.tests.JvmLauncher.LaunchedJvm;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
+
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base class for {@link ApplicationLauncher} implementations that use

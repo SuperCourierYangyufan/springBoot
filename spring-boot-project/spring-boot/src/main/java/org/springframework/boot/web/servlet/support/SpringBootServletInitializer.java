@@ -16,17 +16,8 @@
 
 package org.springframework.boot.web.servlet.support;
 
-import java.util.Collections;
-
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.ParentContextApplicationContextInitializer;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -44,6 +35,9 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ConfigurableWebEnvironment;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
+
+import javax.servlet.*;
+import java.util.Collections;
 
 /**
  * An opinionated {@link WebApplicationInitializer} to run a {@link SpringApplication}
@@ -105,8 +99,26 @@ public abstract class SpringBootServletInitializer implements WebApplicationInit
 		}
 	}
 
+	/**
+	 * 先创建 SpringApplicationBuilder 应用构建器；
+	 *
+	 * 再创建一些环境配置；
+	 *
+	 * 下面中间部分有一句： builder = configure(builder);
+	 *
+	 * 这句源码由于多态，执行了子类（SpringBoot 工程中必须写的那个启动类的同包下的 ServletInitializer）重写的方法；
+	 *
+	 * 又因为重写的格式固定，是传入了 SpringBoot 的目标运行主程序；
+	 *
+	 * return builder.sources(DemoApplication.class);
+	 *
+	 * 所以下一步才能启动 SpringBoot 工程。
+	 *
+	 * 之后就跟启动运行主程序 SpringBootApplication 没什么区别了。
+	 */
 	protected WebApplicationContext createRootApplicationContext(
 			ServletContext servletContext) {
+		// 使用Builder机制
 		SpringApplicationBuilder builder = createSpringApplicationBuilder();
 		builder.main(getClass());
 		ApplicationContext parent = getExistingRootWebApplicationContext(servletContext);
@@ -116,11 +128,15 @@ public abstract class SpringBootServletInitializer implements WebApplicationInit
 					WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, null);
 			builder.initializers(new ParentContextApplicationContextInitializer(parent));
 		}
+		// 设置Initializer
 		builder.initializers(
 				new ServletContextApplicationContextInitializer(servletContext));
+		// 在这里设置了容器启动类：AnnotationConfigServletWebServerApplicationContext
 		builder.contextClass(AnnotationConfigServletWebServerApplicationContext.class);
+		// 【引导】多态进入子类（自己定义）的方法中
 		builder = configure(builder);
 		builder.listeners(new WebEnvironmentPropertySourceInitializer(servletContext));
+		// builder.build()，创建SpringApplication
 		SpringApplication application = builder.build();
 		if (application.getAllSources().isEmpty() && AnnotationUtils
 				.findAnnotation(getClass(), Configuration.class) != null) {
@@ -134,6 +150,7 @@ public abstract class SpringBootServletInitializer implements WebApplicationInit
 			application.addPrimarySources(
 					Collections.singleton(ErrorPageFilterConfiguration.class));
 		}
+		// 启动SpringBoot应用
 		return run(application);
 	}
 

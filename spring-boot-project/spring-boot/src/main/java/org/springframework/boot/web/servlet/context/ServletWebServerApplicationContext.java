@@ -147,6 +147,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	@Override
 	protected void finishRefresh() {
 		super.finishRefresh();
+		//正在启动tomcat
 		WebServer webServer = startWebServer();
 		if (webServer != null) {
 			publishEvent(new ServletWebServerInitializedEvent(webServer, this));
@@ -163,11 +164,15 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 		WebServer webServer = this.webServer;
 
 		ServletContext servletContext = getServletContext();
+		// 如果WebServer和ServletContext都为null时，证明需要创建嵌入式Tomcat
 		if (webServer == null && servletContext == null) {
 			// 还记得EmbeddedTomcat 配置类中注册了一个TomcatServletWebServerFactory类型的bean吗？
 			// getWebServerFactory方法就是从容器中获取到TomcatServletWebServerFactory类型的bean
+
+			/// 创建了嵌入式Tomcat的工厂
 			ServletWebServerFactory factory = getWebServerFactory();
 			// 调用TomcatServletWebServerFactory的getWebServer方法得到Tomcat服务器
+			// 创建嵌入式Tomcat
 			this.webServer = factory.getWebServer(getSelfInitializer());
 		}
 		else if (servletContext != null) {

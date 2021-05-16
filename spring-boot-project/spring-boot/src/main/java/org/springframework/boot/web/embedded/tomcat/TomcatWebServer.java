@@ -16,30 +16,22 @@
 
 package org.springframework.boot.web.embedded.tomcat;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import javax.naming.NamingException;
-
-import org.apache.catalina.Container;
-import org.apache.catalina.Context;
-import org.apache.catalina.Engine;
-import org.apache.catalina.Lifecycle;
-import org.apache.catalina.LifecycleException;
-import org.apache.catalina.LifecycleState;
-import org.apache.catalina.Service;
+import org.apache.catalina.*;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.naming.ContextBindings;
-
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.util.Assert;
+
+import javax.naming.NamingException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * {@link WebServer} that can be used to control a Tomcat web server. Usually this class
@@ -83,6 +75,7 @@ public class TomcatWebServer implements WebServer {
 		Assert.notNull(tomcat, "Tomcat Server must not be null");
 		this.tomcat = tomcat;
 		this.autoStart = autoStart;
+		//初始化
 		initialize();
 	}
 
@@ -90,25 +83,34 @@ public class TomcatWebServer implements WebServer {
 		logger.info("Tomcat initialized with port(s): " + getPortsDescription(false));
 		synchronized (this.monitor) {
 			try {
+				// 设置Engine的id
 				addInstanceIdToEngineName();
-
+				//  获取第一个Context
 				Context context = findContext();
+				//添加监听器
 				context.addLifecycleListener((event) -> {
 					if (context.equals(event.getSource())
 							&& Lifecycle.START_EVENT.equals(event.getType())) {
-						// Remove service connectors so that protocol binding doesn't
-						// happen when the service is started.
+						// 删除ServiceConnectors，以便在启动服务时不会发生协议绑定。
+						//创建嵌入式 Tomcat 的时机是 onRefresh 方法，此时还有很多单实例Bean没有被创建，
+						// 此时如果直接初始化所有组件后，Connector 也被初始化，此时客户端就可以与 Tomcat 进行交互，
+						// 但这个时候单实例Bean还没有初始化完毕（尤其是 DispatcherServlet），
+						// 就会导致传入的请求 Tomcat 无法处理，出现异常
+						//所以 SpringBoot 为了避免这个问题，
+						// 会在嵌入式 Tomcat 发布事件时检测此时的 Context 状态是否为 "START_EVENT" ，
+						// 如果是则将这些 Connector 先移除掉
 						removeServiceConnectors();
 					}
 				});
 
-				// Start the server to trigger initialization listeners
+				// 启动Tomcat,但是因为上面删除ServiceConnectors所以启动时只将所有组件给初始化,并未正在的启动
 				this.tomcat.start();
 
-				// We can re-throw failure exception directly in the main thread
+				// 如果上面的启动出现问题，则抛出异常
 				rethrowDeferredStartupExceptions();
 
 				try {
+					// 将当前Context与当前ClassLoader绑定
 					ContextBindings.bindClassLoader(context, context.getNamingToken(),
 							getClass().getClassLoader());
 				}
@@ -117,7 +119,13 @@ public class TomcatWebServer implements WebServer {
 				}
 
 				// Unlike Jetty, all Tomcat threads are daemon threads. We create a
-				// blocking non-daemon to stop immediate shutdown
+				// 阻止Tomcat结束
+				//这里面它会起一个新的 awaitThread 线程，并回调 Tomcat 中 Server 的 await 方法，并且它还设置 Daemon 为false
+				//先解释一下为什么设置 Daemon ：Tomcat 中所有的进程都是 Daemon 线程，
+				// 在Java应用中，只要有一个非 Daemon 线程还在运行，则 Daemon 线程就不会停止，整个应用也不会终止。
+				// 既然要让 Tomcat 一直运行以监听客户端请求，就必须需要让 Tomcat 内部的 Daemon 线程都存活，
+				// 根据前面的描述，就必须制造一个能卡住停止的非 Daemon 线程。
+				// 于是上面新起的 awaitThread 线程就被设置为非 Daemon 线程。
 				startDaemonAwaitThread();
 			}
 			catch (Exception ex) {
@@ -194,11 +202,15 @@ public class TomcatWebServer implements WebServer {
 				return;
 			}
 			try {
+				//还原、启动Connector
 				addPreviouslyRemovedConnectors();
+				//只拿一个Connector
 				Connector connector = this.tomcat.getConnector();
 				if (connector != null && this.autoStart) {
+					//延迟启动
 					performDeferredLoadOnStartup();
 				}
+				// 检查Connector是否正常启动
 				checkThatConnectorsHaveStarted();
 				this.started = true;
 				logger.info("Tomcat started on port(s): " + getPortsDescription(true)
@@ -213,6 +225,7 @@ public class TomcatWebServer implements WebServer {
 						ex);
 			}
 			finally {
+				// 解除ClassLoader与TomcatEmbeddedContext的绑定关系
 				Context context = findContext();
 				ContextBindings.unbindClassLoader(context, context.getNamingToken(),
 						getClass().getClassLoader());
@@ -256,6 +269,7 @@ public class TomcatWebServer implements WebServer {
 			Connector[] connectors = this.serviceConnectors.get(service);
 			if (connectors != null) {
 				for (Connector connector : connectors) {
+					//添加并启动
 					service.addConnector(connector);
 					if (!this.autoStart) {
 						stopProtocolHandler(connector);

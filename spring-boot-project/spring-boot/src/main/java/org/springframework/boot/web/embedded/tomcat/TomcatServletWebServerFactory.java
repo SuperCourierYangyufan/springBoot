@@ -16,37 +16,8 @@
 
 package org.springframework.boot.web.embedded.tomcat;
 
-import java.io.File;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.servlet.ServletContainerInitializer;
-
-import org.apache.catalina.Context;
-import org.apache.catalina.Engine;
-import org.apache.catalina.Host;
-import org.apache.catalina.Lifecycle;
-import org.apache.catalina.LifecycleEvent;
-import org.apache.catalina.LifecycleException;
-import org.apache.catalina.LifecycleListener;
-import org.apache.catalina.Manager;
-import org.apache.catalina.Valve;
-import org.apache.catalina.WebResource;
+import org.apache.catalina.*;
 import org.apache.catalina.WebResourceRoot.ResourceSetType;
-import org.apache.catalina.WebResourceSet;
-import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.AprLifecycleListener;
 import org.apache.catalina.loader.WebappLoader;
@@ -60,7 +31,6 @@ import org.apache.catalina.webresources.StandardRoot;
 import org.apache.coyote.AbstractProtocol;
 import org.apache.coyote.http2.Http2Protocol;
 import org.apache.tomcat.util.scan.StandardJarScanFilter;
-
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.MimeMappings;
 import org.springframework.boot.web.server.WebServer;
@@ -72,6 +42,16 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
+
+import javax.servlet.ServletContainerInitializer;
+import java.io.File;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.*;
 
 /**
  * {@link AbstractServletWebServerFactory} that can be used to create
@@ -158,19 +138,27 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 	@Override
 	public WebServer getWebServer(ServletContextInitializer... initializers) {
 		Tomcat tomcat = new Tomcat();
+		// 给嵌入式Tomcat创建一个临时文件夹，用于存放Tomcat运行中需要的文件
 		File baseDir = (this.baseDirectory != null) ? this.baseDirectory
 				: createTempDir("tomcat");
 		tomcat.setBaseDir(baseDir.getAbsolutePath());
+		// Tomcat核心概念：Connector，默认放入的protocol为NIO模式
 		Connector connector = new Connector(this.protocol);
+		// 给Service添加Connector
 		tomcat.getService().addConnector(connector);
+		// 执行定制器，修改即将设置到Tomcat中的Connector
 		customizeConnector(connector);
 		tomcat.setConnector(connector);
+		// 关闭热部署（嵌入式Tomcat不存在修改web.xml、war包等情况）
 		tomcat.getHost().setAutoDeploy(false);
+		// 设置backgroundProcessorDelay机制
 		configureEngine(tomcat.getEngine());
 		for (Connector additionalConnector : this.additionalTomcatConnectors) {
 			tomcat.getService().addConnector(additionalConnector);
 		}
+		//生成TomcatEmbeddedContext
 		prepareContext(tomcat.getHost(), initializers);
+		//创建TomcatWebServer
 		return getTomcatWebServer(tomcat);
 	}
 
@@ -183,35 +171,45 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 
 	protected void prepareContext(Host host, ServletContextInitializer[] initializers) {
 		File documentRoot = getValidDocumentRoot();
+		// 创建TomcatEmbeddedContext
 		TomcatEmbeddedContext context = new TomcatEmbeddedContext();
 		if (documentRoot != null) {
 			context.setResources(new LoaderHidingResourceRoot(context));
 		}
 		context.setName(getContextPath());
 		context.setDisplayName(getDisplayName());
+		// 设置contextPath，很熟悉了;
 		context.setPath(getContextPath());
+		// 给嵌入式Tomcat创建docbase的临时文件夹
 		File docBase = (documentRoot != null) ? documentRoot
 				: createTempDir("tomcat-docbase");
 		context.setDocBase(docBase.getAbsolutePath());
+		// 注册监听器
 		context.addLifecycleListener(new FixContextListener());
 		context.setParentClassLoader(
 				(this.resourceLoader != null) ? this.resourceLoader.getClassLoader()
 						: ClassUtils.getDefaultClassLoader());
+		// 设置默认编码映射
 		resetDefaultLocaleMapping(context);
 		addLocaleMappings(context);
 		context.setUseRelativeRedirects(false);
 		configureTldSkipPatterns(context);
+		// 自定义的类加载器，可以加载web应用的jar包
 		WebappLoader loader = new WebappLoader(context.getParentClassLoader());
 		loader.setLoaderClass(TomcatEmbeddedWebappClassLoader.class.getName());
+		// 指定类加载器遵循双亲委派机制
 		loader.setDelegate(true);
 		context.setLoader(loader);
+		// 注册默认的Servlet
 		if (isRegisterDefaultServlet()) {
 			addDefaultServlet(context);
 		}
+		// 如果需要jsp支持，注册jsp的Servlet和Initializer
 		if (shouldRegisterJspServlet()) {
 			addJspServlet(context);
 			addJasperInitializer(context);
 		}
+		// 注册监听器
 		context.addLifecycleListener(new StaticResourceConfigurer(context));
 		ServletContextInitializer[] initializersToUse = mergeInitializers(initializers);
 		host.addChild(context);
